@@ -1,10 +1,19 @@
+//  THIS PROGRAM DOES INVERSION ITERATIVELY AND QUALIFIES FOR EXTRA CREDIT
+
+/*
+Name: Aamir Mansoor
+MacID: mansoa4
+Student Number: 1406581
+Description: This program multiplies matrices together and finds the inverse
+			 ... of that product.
+*/
 
 public class HWK2_mansoa4 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		// Multiplies all the matrices together
+		// Finds the inverse of all the matrices multiplied together
 		matrixInverter(args);
 		
 	}
@@ -89,35 +98,52 @@ public class HWK2_mansoa4 {
 	// ... and the scaler to multiply the row by.
 	public static double[] multiplyRow(double[] a, double scaler) {
 
+		// Iterates through all the elements in a row and multiplies by scaler
 		for (int i = 0; i < a.length; i++) {
 			a[i] = a[i]*scaler;
 		}
+		
+		// Returns the multiplied row 
 		return a;
 	}
 	
+	// Function that performs row addition that takes in the row to be added (b)
+	// ... the row being used to add to a (b) and the scaler that makes it so
+	// ... you zero out the desired term when solving for RREF
 	public static double[] addRow(double[] a, double[] b, double scaler) {
-		
-		for (int j = 0; j < a.length; j++) {
-		}
-		
+
+		//  Clones a and b to avoid referencing issues
 		double[] aCop = a.clone();
 		double[] bCop = b.clone();
+		
+		// Uses multiply row to multiply a by the scaler
 		aCop = multiplyRow(aCop,scaler);
 		
+		// Iterates through every element in b and subtracts (adds a negative)
+		// ... accordingly to provide the desired row addition
 		for (int i=0; i < a.length; i++) {
 			bCop[i] = bCop[i] - aCop[i];
 		}
+		
+		// Returns the added row
 		return bCop;
 	}
 	
+	// Function that inverts a matric that takes in only arguments.
 	public static double[][] matrixInverter(String[] args) {
+		// Multiples all the matrices together using matrixMultiplier
 		double[][] a = matrixMultiplier(args);
+		// Creates a new blank matrix with the same dimensions as a
 		double[][] b = new double[a.length][a.length];
 		
+		// Only square matrices can be inverted, so if a is not square a message
+		// ... goes to the console saying the Matrix is not Invettible 
 		if (a[0].length != a.length) {
 			System.out.println("Matrix not invertible");
 		}
 		
+		//  If it is invertible this nested for loop creates an identity matrix
+		// ... with the same dimensions as a
 		else {
 			for (int i = 0; i < a.length; i++) {
 				for (int j = 0; j < a.length; j++) {
@@ -131,9 +157,14 @@ public class HWK2_mansoa4 {
 			}
 		}
 		
+		// Begins to perform RREF one column at a time
 		for (int i = 0; i < a.length; i++) {
 			
+			// If there is a zero about the main diagonal then this swaps rows
+			// ... with the row below 
 			if (a[i][i] == 0) {
+				
+				// Performs swap by saving to temp. then swapping (same for b)
 				double[] temp = a[i];
 				a[i] = a[i+1];
 				a[i+1] = temp;
@@ -143,15 +174,22 @@ public class HWK2_mansoa4 {
 				b[i+1] = bTemp;
 			}
 			
+			// Saves the divisor to make main diagonal 1 to a variable
 			double divisor = 1/a[i][i];
 			
+			// Multiplies both a and b by the divisor
 			a[i] = multiplyRow(a[i],divisor);
 			b[i] = multiplyRow(b[i],divisor);
 			
+			// Runs through every column of the code making everything not along
+			// .. main diagonal 0 (by using addRow)
 			for (int j = 0; j < a.length; j++) {
+				// Skips making this element 0 if its on the main diagonal
 				if (i != j) {
+					// Determines the saler to use to add rows
 					double scaler = a[j][i];
 					
+					// Performs the same addition operation on a as b
 					a[j] = addRow(a[i],a[j],scaler);
 					b[j] = addRow(b[i],b[j],scaler);
 					
@@ -159,19 +197,37 @@ public class HWK2_mansoa4 {
 			}	
 		}
 		
-		
+		// Checks to see of any row sum = 0, if so the matrix is singular and 
+		// ... the correct message is printed to the console
 		for (int i = 0; i < b.length; i++) {
-			int sum = 0;
+			double sum = 0;
 			for (int j = 0; j < b.length; j++) {
-				sum += b[i][j];
+				//  Rounds values to two decimal places
+				b[i][j] = (double)Math.round(b[i][j]*100)/100;
+				
+				// Checks to see if the value of b is 0
+				if (b[i][j] == 0) {
+					// If so then it adds one to the sum
+					sum += 1;
+				}
 			}
-			if (sum == 0) {
+			// If the sum is the same as the length of b (row of zeros)
+			if (sum == b.length) {
+				// Prints the matrix is not invertible
 				System.out.println("Matrix not invertible");
 			}
 		}
 		
-		System.out.println(b[0][0] + " " + b[0][1]);
-		System.out.println(b[1][0] + " " + b[1][1]);
+		// For loops that runs for the amount of rows in b
+		for (int i = 0; i < b.length; i ++) {
+			// For loop that runs for the amount of columns in b
+			for (int j = 0; j < b.length; j++) {
+				// Prints every value to the console separated by a space
+				System.out.print(b[i][j] + " ");
+			}
+		}
+		
+		// Returns the inverted matrix
 		return b;
 	}	
 }

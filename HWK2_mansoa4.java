@@ -60,12 +60,16 @@ public class HWK2_mansoa4 {
 		for (int i = 0; i < Integer.parseInt(args[0]) - 1;i++) {
 			// Creates the second matrix to be multiplied
 			double [][] b = matrixMaker(i + 1,args);
-			// Creates an empty matric with the dimensions of the product
+			// Creates an empty matrix with the dimensions of the product
 			double[][] c = new double[a.length][b[0].length];
 			// Checks if N of the first matrix is the same as M of the second
 			if (a[0].length != b.length){
 				// If not the matrices cannot be multiplied and it prints error
 				System.out.println("Multiplication error.");
+				// Creates a 2D array with length 0
+				double[][] temp = new double [0][0];
+				// Returns blank array to stop rest of function from running
+				return temp;
 			}
 			else {
 				// Iterates for the # of rows of the first matrix
@@ -129,17 +133,24 @@ public class HWK2_mansoa4 {
 		return bCop;
 	}
 	
-	// Function that inverts a matric that takes in only arguments.
+	// Function that inverts a matrix that takes in only arguments.
 	public static double[][] matrixInverter(String[] args) {
 		// Multiples all the matrices together using matrixMultiplier
 		double[][] a = matrixMultiplier(args);
+		// If the length of multiplied matrix is 0 (empty) then it was not
+		// ... multiplied successfully
+		if (a.length == 0) {
+			// Returns to stop function from completing
+			return a;
+		}
 		// Creates a new blank matrix with the same dimensions as a
 		double[][] b = new double[a.length][a.length];
 		
 		// Only square matrices can be inverted, so if a is not square a message
-		// ... goes to the console saying the Matrix is not Invettible 
+		// ... goes to the console saying the Matrix is not Invertible 
 		if (a[0].length != a.length) {
 			System.out.println("Matrix not invertible");
+			return a;
 		}
 		
 		//  If it is invertible this nested for loop creates an identity matrix
@@ -215,9 +226,11 @@ public class HWK2_mansoa4 {
 			if (sum == b.length) {
 				// Prints the matrix is not invertible
 				System.out.println("Matrix not invertible");
+				// Returns a to stop function running
+				return a;
 			}
 		}
-		
+
 		// For loops that runs for the amount of rows in b
 		for (int i = 0; i < b.length; i ++) {
 			// For loop that runs for the amount of columns in b
